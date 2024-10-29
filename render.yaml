@@ -1,9 +1,0 @@
-services:
-  # A Docker web service
-  - type: web
-    name: fastapi-example
-    runtime: python
-    plan: free
-    autoDeploy: false
-    buildCommand: "./render-build.sh"
-    startCommand: fastapi run main.py
