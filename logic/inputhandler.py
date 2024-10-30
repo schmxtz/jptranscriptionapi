@@ -7,6 +7,15 @@ from models.phonetizer_model import PhonetizerInput
 NUM_PROPN = 92
 NUM_POS = 93
 
+PUNCT_MAPPINGS = {
+    ',': '、',
+    '.': '。',
+    '."': '」',
+    '".': '「',
+    '.\'': '」',
+    '\'.': '「',
+}
+
 
 # Convert basic user input string to a list of objects for phonetizer and katakanizer
 class InputHandler:
@@ -26,9 +35,17 @@ class InputHandler:
     
     def get_katakana(self, x: PhonetizerInput):
         words = self.get_phonetics(x)
+        quotation_counter = 0
         for i in range(len(words)):
             (word, pos, ipa) = words[i]
-            words[i] += (self.katakanizer.transcribe_word(ipa),)
+            if pos == 'PUNCT':
+                if word == '\"':
+                    transcription = PUNCT_MAPPINGS['.'+word] if quotation_counter % 2 == 0 else PUNCT_MAPPINGS[word+'.'] 
+                    quotation_counter += 1
+                transcription = PUNCT_MAPPINGS[word]
+            else:
+                transcription = self.katakanizer.transcribe_word(ipa)
+            words[i] += (transcription,)
         return words
 
     def _handle_input(self, x: PhonetizerInput):
@@ -52,5 +69,4 @@ class InputHandler:
                     words[i] = ('Stück', pos)
                 elif i != len(words)-1 and words[i+1][1] == 'PROPN':  # st. preceded by a noun with no number before
                     words[i] = ('Sankt', pos)
-
     
