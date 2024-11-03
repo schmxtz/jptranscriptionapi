@@ -14,6 +14,7 @@ PUNCT_MAPPINGS = {
     '".': '「',
     '.\'': '」',
     '\'.': '「',
+    ':': ':'
 }
 
 
@@ -42,7 +43,7 @@ class InputHandler:
                 if word == '\"':
                     transcription = PUNCT_MAPPINGS['.'+word] if quotation_counter % 2 == 0 else PUNCT_MAPPINGS[word+'.'] 
                     quotation_counter += 1
-                transcription = PUNCT_MAPPINGS[word]
+                transcription = PUNCT_MAPPINGS.get(word) if PUNCT_MAPPINGS.get(word) else word
             else:
                 transcription = self.katakanizer.transcribe_word(ipa)
             words[i] += (transcription,)
