@@ -38,14 +38,18 @@ class InputHandler:
         quotation_counter = 0
         for i in range(len(words)):
             (word, pos, ipa) = words[i]
-            if pos == 'PUNCT':
-                if word == '\"':
-                    transcription = PUNCT_MAPPINGS['.'+word] if quotation_counter % 2 == 0 else PUNCT_MAPPINGS[word+'.'] 
-                    quotation_counter += 1
-                transcription = PUNCT_MAPPINGS.get(word) if PUNCT_MAPPINGS.get(word) else word
-            else:
-                transcription = self.katakanizer.transcribe_word(ipa)
-            words[i] += (transcription,)
+            try:
+                if pos == 'PUNCT':
+                    if word == '\"':
+                        transcription = PUNCT_MAPPINGS['.'+word] if quotation_counter % 2 == 0 else PUNCT_MAPPINGS[word+'.'] 
+                        quotation_counter += 1
+                    transcription = PUNCT_MAPPINGS.get(word) if PUNCT_MAPPINGS.get(word) else word
+                else:
+                    transcription = self.katakanizer.transcribe_word(ipa)
+                words[i] += (transcription,)
+            except Exception as e:
+                print(e)
+                words[i] += ('',)
         return words
 
     def _handle_input(self, x: PhonetizerInput):
