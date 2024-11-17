@@ -1,3 +1,4 @@
 spacy==3.8.2
 fastapi[standard]==0.115.3
 jptranscription
+num2words
